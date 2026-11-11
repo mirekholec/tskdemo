@@ -19,7 +19,8 @@ export default {
   // Otevírací doba v celých hodinách (open včetně, close vyjma)
   openingHours: { open: 13, close: 20 },
 
-  reservations: { capacityPerSlot: 5, daysAhead: 14 },
+  // holdMinutes: jak dlouho od začátku hodinového slotu držíme stůl (jen text pro hosta, aplikace to nevynucuje)
+  reservations: { capacityPerSlot: 5, daysAhead: 14, holdMinutes: 15 },
 
   // Heslo v plain textu je pro demo záměrné zjednodušení (viz backlog v docs/PLAN.md)
   admin: { password: 'holubnik2026', sessionTtlMinutes: 120 },

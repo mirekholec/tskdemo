@@ -117,6 +117,7 @@ function appGlobals() {
       phoneHref: config.cafe.phone.replace(/\s+/g, '')
     },
     openingHours: config.openingHours,
+    holdMinutes: config.reservations.holdMinutes,
     year: new Date().getFullYear(),
     currentPath: ''
   };
