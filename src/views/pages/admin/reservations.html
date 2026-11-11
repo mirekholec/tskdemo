@@ -1,0 +1,31 @@
+    <div class="admin-container">
+      <div class="admin-toolbar">
+        <div>
+          <h1 class="admin-title">Nadcházející rezervace</h1>
+          <p class="admin-muted">Celkem {{ countLabel }} od dnešního dne</p>
+        </div>
+        <form method="post" action="/admin/logout">
+          <button class="admin-button admin-button--secondary" type="submit">Odhlásit</button>
+        </form>
+      </div>
+
+      <p class="admin-flash" role="status">{{ flash }}</p>
+      <p class="admin-empty">{{ emptyMessage }}</p>
+
+      <!-- Uvnitř tbody nesmí být mezery, aby se prázdná tabulka skryla přes CSS :empty -->
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th class="admin-table__head" scope="col">Datum</th>
+              <th class="admin-table__head" scope="col">Čas</th>
+              <th class="admin-table__head" scope="col">Jméno</th>
+              <th class="admin-table__head" scope="col">Telefon</th>
+              <th class="admin-table__head" scope="col">Vytvořeno</th>
+              <th class="admin-table__head" scope="col"><span class="admin-visually-hidden">Akce</span></th>
+            </tr>
+          </thead>
+          <tbody class="admin-table__body">{{{ rows }}}</tbody>
+        </table>
+      </div>
+    </div>

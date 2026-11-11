@@ -1,0 +1,61 @@
+﻿TYPE,CONTENT,DESCRIPTION,ICON,IS_COLLAPSED,PRIORITY,INDENT,AUTHOR,RESPONSIBLE,DATE,DATE_LANG,TIMEZONE,DURATION,DURATION_UNIT,DEADLINE,DEADLINE_LANG,REMINDER_TYPE,REMINDER_OFFSET,REMINDER_DATE,REMINDER_DATE_LANG
+meta,view_style=list,Úkoly související s kavárnou holubník.,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+task,kuba-stejne-cislo (10) @feature,"**Kuba** 14:05
+čau, dneska jsem v adminu zjistil, že na pátek v 17h je 5 rezervací na stejný číslo, různý jména (Pepa, Franta, Jarda, Karel, Bohouš) 🤨 volal jsem tam a nikdo to nebere
+
+**Tomáš Krejčí** 14:09
+to bude nějakej vtipálek. dá se to nějak zakázat?
+
+**Kuba** 14:10
+anebo kámoš, co rezervuje pro celou partu, to se taky stává
+
+**Kuba** 14:11
+jo a jedna rezervace je na +420 777 222 333 a druhá na 777222333, to je asi taky ten samej člověk ne?
+
+**Jana Holubová** 14:20
+max 1 stůl na jedno číslo na stejnej čas. kdo chce víc, ať zavolá. a ty páteční smažte",,,2,1,Miroslav (14678739),,,,Europe/Prague,,,,,,,,
+note,"To by se mělo nastavit systémově, kontrolovat tel č. na čas",,,,,,Miroslav (14678739),,2026-11-06T10:43:27.319000Z,,,,,,,,,,
+task,hlasovka-jana-historie-rezervaci (14) @feature,"Ahoj Martine, tady Jana. Hele, v adminu vidím jenom ty rezervace, co teprve budou. Já se ale potřebuju podívat i zpátky. Třeba teď volala paní Kovářová, že tu minulý týden zapomněla deštník, a já nevím, kdy tu byla. Takže potřebuju najít rezervaci podle jména nebo podle telefonu. A vybrat si datum, nebo nějaké od do, třeba celý minulý týden. No a ten seznam je jeden dlouhý, to už je teď dost nepřehledné, a to tam máme rezervace jen na dva týdny dopředu. Tak nějak, jak to půjde. Díky, ahoj.",,,3,1,Miroslav (14678739),,,,Europe/Prague,,,,,,,,
+task,tomas-telefonicke-rezervace (02) @feature,"**Tomáš Krejčí** 10:42
+hele, lidi nám furt volaj kvůli rezervaci, hlavně starší paní. píšu to na papír u kasy a pak to samozřejmě nesedí s webem, minulej pátek jsme měli v 17h 7 stolů na 5 míst 🙃
+
+**Tomáš Krejčí** 10:43
+šlo by to zadávat rovnou v adminu? jméno, telefon, kdy. a kdyby to šlo i přesunout na jinej čas, když volaj, že se zpozděj, to by bylo top
+
+**Jana Holubová** 10:51
++1, ale ať to nejde přes tu kapacitu, jinak je to k ničemu
+
+**Tomáš Krejčí** 10:52
+no jo, ale občas tam někoho fakt nacpem, když je to štamgast 😅
+
+**Jana Holubová** 10:53
+tak to vyřešte nějak",,,4,1,Miroslav (14678739),,,,Europe/Prague,,,,,,,,
+note,Bych na veřejný části nechal max 5 lidí a v adminu možnost zadat ručně a klidně přes limit,,,,,,Miroslav (14678739),,2026-11-06T10:42:41.873000Z,,,,,,,,,,
+note,Jo a druhá funkce tedy bude editace rezervace s možností změnit čas,,,,,,Miroslav (14678739),,2026-11-06T19:16:41.207000Z,,,,,,,,,,
+task,jana-vse-obsazeno (11) @bug,"**Jana Holubová** 17:32
+kamarádka mi psala, že chtěla dneska odpoledne přijít a na webu bylo všechno obsazený. Byli tu dva lidi 😡 nefunguje ta rezervace?? posílala mi screenshot, mám ho v mobilu
+
+**Tomáš Krejčí** 17:40
+mně to večer šlo, rezervoval jsem si zkušebně na zítra a pak jsem to smazal
+
+**Jana Holubová** 17:41
+ona to zkoušela kolem čtvrté
+
+**Jana Holubová** 17:41
+@Mirek mrkneš na to? nechci přicházet o lidi",,,4,1,Miroslav (14678739),,,,Europe/Prague,,,,,,,,
+task,tomas-dnesni-rezervace (13) @feature,"**Tomáš Krejčí** 13:12
+čau Martine, máme teď admin otevřenej na tabletu u baru a dvě věci:
+
+**Tomáš Krejčí** 13:13
+
+NaN. dnešní rezervace by měly bejt nějak barevně odlišený, ať je hned vidím a nemusím číst datum
+
+**Tomáš Krejčí** 13:13
+
+2. ty, co už dneska proběhly, bych tam nejradši vůbec neviděl, nebo aspoň šedě
+
+**Tomáš Krejčí** 13:14
+nic velkýho, ale ušetřilo by mi to dost klikání. díky!",,,4,1,Miroslav (14678739),,,,Europe/Prague,,,,,,,,
+note,dnešní rezervace zvýrazníme a ta proběhlé zobrazíme nějak tlumeně,,,,,,Miroslav (14678739),,2026-11-06T19:02:36.146000Z,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,

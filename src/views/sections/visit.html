@@ -1,0 +1,36 @@
+    <section class="section visit" id="navsteva">
+      <div class="container visit__grid">
+        <div class="visit__content">
+          <p class="eyebrow">Návštěva</p>
+          <h2 class="section__title">Kde nás najdete</h2>
+
+          <dl class="visit__list">
+            <div class="visit__item">
+              <dt class="visit__label">Otevírací doba</dt>
+              <dd class="visit__value">Denně {{ openingHours.open }}:00–{{ openingHours.close }}:00</dd>
+            </div>
+            <div class="visit__item">
+              <dt class="visit__label">Adresa</dt>
+              <dd class="visit__value">{{ cafe.street }}<br>{{ cafe.city }}</dd>
+            </div>
+            <div class="visit__item">
+              <dt class="visit__label">MHD</dt>
+              <dd class="visit__value">Tramvaj 10, 13 a 16, zastávka Holubí<br>Metro A, Jiřího z Poděbrad (6 minut pěšky)</dd>
+            </div>
+            <div class="visit__item">
+              <dt class="visit__label">Kontakt</dt>
+              <dd class="visit__value">
+                <a class="text-link" href="tel:{{ cafe.phoneHref }}">{{ cafe.phone }}</a><br>
+                <a class="text-link" href="mailto:{{ cafe.email }}">{{ cafe.email }}</a>
+              </dd>
+            </div>
+          </dl>
+
+          <p class="visit__note">Bezbariérový vstup z ulice. Pejsci jsou vítáni, miska s vodou čeká u dveří.</p>
+        </div>
+
+        <div class="visit__media">
+          <img class="visit__image" src="/assets/images/visit.jpg" alt="Výloha kavárny se zeleným rámem, dřevěnými dveřmi a lavičkou na chodníku" width="1536" height="1024" loading="lazy" decoding="async">
+        </div>
+      </div>
+    </section>

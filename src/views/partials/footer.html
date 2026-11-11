@@ -1,0 +1,37 @@
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <div class="site-footer__brand">
+        <a class="brand brand--light" href="/">
+          <img class="brand__logo" src="/assets/images/logo.svg" alt="" width="44" height="44">
+          <span class="brand__text">
+            <span class="brand__name">Holubník</span>
+            <span class="brand__claim">kavárna · Vinohrady</span>
+          </span>
+        </a>
+        <p class="site-footer__text">{{ cafe.tagline }}. Otevřeno denně {{ openingHours.open }}:00–{{ openingHours.close }}:00.</p>
+      </div>
+
+      <div class="site-footer__column">
+        <h2 class="site-footer__title">Kontakt</h2>
+        <address class="site-footer__address">
+          {{ cafe.street }}<br>
+          {{ cafe.city }}<br>
+          <a class="site-footer__link" href="tel:{{ cafe.phoneHref }}">{{ cafe.phone }}</a><br>
+          <a class="site-footer__link" href="mailto:{{ cafe.email }}">{{ cafe.email }}</a>
+        </address>
+      </div>
+
+      <div class="site-footer__column">
+        <h2 class="site-footer__title">Sledujte nás</h2>
+        <p><a class="site-footer__link" href="{{ cafe.instagram }}" rel="noopener">Instagram @kavarnaholubnik</a></p>
+        <p class="site-footer__note">Novinky z pražírny, nové dorty a akce.</p>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <div class="container site-footer__bottom-inner">
+        <p>© {{ year }} {{ cafe.name }}</p>
+        <a class="site-footer__admin" href="/admin">Administrace</a>
+      </div>
+    </div>
+  </footer>

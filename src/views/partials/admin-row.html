@@ -1,0 +1,12 @@
+          <tr class="admin-table__row">
+            <td class="admin-table__cell">{{ dateLabel }}</td>
+            <td class="admin-table__cell admin-table__cell--strong">{{ time }}</td>
+            <td class="admin-table__cell">{{ name }}</td>
+            <td class="admin-table__cell"><a class="admin-link" href="tel:{{ phone }}">{{ phone }}</a></td>
+            <td class="admin-table__cell admin-table__cell--muted">{{ createdLabel }}</td>
+            <td class="admin-table__cell admin-table__cell--actions">
+              <form method="post" action="/admin/reservations/{{ id }}/delete" data-confirm="{{ confirmMessage }}">
+                <button class="admin-button admin-button--danger" type="submit">Smazat</button>
+              </form>
+            </td>
+          </tr>

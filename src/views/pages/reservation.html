@@ -1,0 +1,90 @@
+    <section class="page-hero">
+      <div class="container">
+        <p class="eyebrow">Rezervace</p>
+        <h1 class="page-hero__title">Rezervace stolu</h1>
+        <p class="lead">Vyberte den a volný čas. Stůl pro vás podržíme celou hodinu, stačí nám jméno a telefon.</p>
+      </div>
+    </section>
+
+    <div class="container reservation">
+      <div class="reservation__main">
+        <form class="card reservation-form" id="reservation-form" novalidate>
+          <fieldset class="form-step">
+            <legend class="form-step__title"><span class="form-step__number" aria-hidden="true">1</span>Vyberte den</legend>
+            <div class="chip-list" id="day-list">
+{{{ dayOptions }}}
+            </div>
+            <p class="field__error" id="date-error"></p>
+          </fieldset>
+
+          <fieldset class="form-step">
+            <legend class="form-step__title"><span class="form-step__number" aria-hidden="true">2</span>Vyberte čas</legend>
+            <p class="slots-status" id="slots-status">Nejdříve vyberte den.</p>
+            <div class="slot-list" id="slot-list"></div>
+            <p class="field__error" id="hour-error"></p>
+          </fieldset>
+
+          <fieldset class="form-step">
+            <legend class="form-step__title"><span class="form-step__number" aria-hidden="true">3</span>Vaše údaje</legend>
+            <div class="field">
+              <label class="field__label" for="name">Jméno a příjmení</label>
+              <input class="field__input" id="name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80" aria-describedby="name-error">
+              <p class="field__error" id="name-error"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="phone">Telefon</label>
+              <input class="field__input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="+420 777 123 456" aria-describedby="phone-hint phone-error">
+              <p class="field__hint" id="phone-hint">Zavoláme jen v případě, že by se něco změnilo.</p>
+              <p class="field__error" id="phone-error"></p>
+            </div>
+          </fieldset>
+
+          <p class="form-message" id="form-message"></p>
+
+          <button class="button button--primary button--large reservation-form__submit" id="submit-button" type="submit">Rezervovat stůl</button>
+          <noscript><p class="form-message">Rezervační formulář potřebuje zapnutý JavaScript. Případně nám zavolejte na {{ cafe.phone }}.</p></noscript>
+        </form>
+
+        <div class="card reservation-success" id="reservation-success" tabindex="-1" hidden>
+          <p class="reservation-success__icon" aria-hidden="true">✓</p>
+          <h2 class="reservation-success__title">Rezervace je potvrzená</h2>
+          <p class="reservation-success__text">Těšíme se na vás <strong id="success-when"></strong>.</p>
+          <p class="reservation-success__text">Stůl je rezervovaný na jméno <strong id="success-name"></strong>. Pokud byste nemohli dorazit, zavolejte nám prosím na <a class="text-link" href="tel:{{ cafe.phoneHref }}">{{ cafe.phone }}</a>.</p>
+          <div class="reservation-success__actions">
+            <a class="button button--primary" href="/">Zpět na úvod</a>
+            <button class="button button--outline" id="new-reservation" type="button">Nová rezervace</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="reservation__aside">
+        <div class="card info-card">
+          <h2 class="info-card__title">Jak rezervace funguje</h2>
+          <ul class="info-list">
+            <li>Rezervace platí pro jeden stůl na celou hodinu.</li>
+            <li>Rezervovat můžete až {{ daysAhead }} dní dopředu, vždy od celé hodiny.</li>
+            <li>Stůl držíme 15 minut od začátku rezervace.</li>
+            <li>Větší skupina nebo oslava? Zavolejte nám na <a class="text-link" href="tel:{{ cafe.phoneHref }}">{{ cafe.phone }}</a>.</li>
+          </ul>
+        </div>
+        <div class="card info-card info-card--sage">
+          <h2 class="info-card__title">Otevřeno denně</h2>
+          <p class="info-card__hours">{{ openingHours.open }}:00–{{ openingHours.close }}:00</p>
+          <p>{{ cafe.street }}, {{ cafe.city }}</p>
+        </div>
+      </aside>
+    </div>
+
+    <p class="visually-hidden" id="live-region" aria-live="polite"></p>
+
+    <template id="slot-template">
+      <label class="slot">
+        <input class="slot__input" type="radio" name="hour" data-slot-input>
+        <span class="slot__body">
+          <span class="slot__time" data-slot-time></span>
+          <span class="slot__info" data-slot-info></span>
+        </span>
+      </label>
+    </template>
+
+    <script type="module" src="/assets/js/reservation.js"></script>

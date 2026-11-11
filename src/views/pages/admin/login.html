@@ -1,0 +1,12 @@
+    <div class="admin-container login">
+      <form class="admin-card login__card" method="post" action="/admin/login">
+        <h1 class="admin-title">Přihlášení</h1>
+        <p class="admin-muted">Administrace rezervací je chráněná heslem.</p>
+        <p class="admin-error" role="alert">{{ error }}</p>
+        <div class="admin-field">
+          <label class="admin-field__label" for="password">Heslo</label>
+          <input class="admin-field__input" id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+        </div>
+        <button class="admin-button admin-button--primary login__submit" type="submit">Přihlásit se</button>
+      </form>
+    </div>

@@ -1,0 +1,1263 @@
+/* ==========================================================================
+   Kavárna Holubník – styly veřejného webu (one-page a rezervace)
+   1. CSS reset  2. Společná nastavení a proměnné  3. Layout  4. Komponenty
+   ========================================================================== */
+
+/* 1. CSS reset (Eric Meyer, v2.0) ------------------------------------------ */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
+body { line-height: 1; }
+ol, ul { list-style: none; }
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+table { border-collapse: collapse; border-spacing: 0; }
+
+/* 2. Společná nastavení a proměnné ------------------------------------------ */
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 100 900; font-display: swap; src: url('../fonts/inter-latin.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 100 900; font-display: swap; src: url('../fonts/inter-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 100 900; font-display: swap; src: url('../fonts/fraunces-latin.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 100 900; font-display: swap; src: url('../fonts/fraunces-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+:root { --color-cream: #F6F0E8; --color-espresso: #2A1E17; --color-terracotta: #C26A3D; --color-terracotta-strong: #A4532B; --color-terracotta-deep: #8A4423; --color-terracotta-text: #94461F; --color-terracotta-soft: #E7B898; --color-sage: #8C9A80; --color-sage-light: #E4E9DF; --color-milk: #FFFDF9; --color-muted: #6B5B50; --color-line: #E6DACB; --color-line-strong: #CDBFAE; --color-error: #A12C1F; --color-error-bg: #FBE9E4; --color-success: #3F6B45; --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif; --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; --radius-sm: 8px; --radius: 14px; --radius-lg: 24px; --radius-pill: 999px; --shadow-sm: 0 1px 2px rgba(42, 30, 23, 0.06), 0 2px 8px rgba(42, 30, 23, 0.06); --shadow-md: 0 12px 32px rgba(42, 30, 23, 0.12); --header-height: 4.5rem; --container-width: 72rem; --transition: 200ms ease; }
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; color: var(--color-espresso); background: var(--color-cream); -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+strong { font-weight: 600; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--color-terracotta); outline-offset: 3px; }
+::selection { background: var(--color-terracotta); color: var(--color-milk); }
+[hidden] { display: none !important; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.nowrap { white-space: nowrap; }
+.skip-link { position: absolute; left: 1rem; top: -4rem; z-index: 100; padding: 0.75rem 1rem; border-radius: var(--radius-sm); background: var(--color-espresso); color: var(--color-milk); text-decoration: none; }
+.skip-link:focus { top: 1rem; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+/* 3. Layout ---------------------------------------------------------------- */
+.container { width: 100%; max-width: var(--container-width); margin-inline: auto; padding-inline: 1.25rem; }
+.section { padding-block: 4.5rem; scroll-margin-top: var(--header-height); }
+.section--milk { background: var(--color-milk); }
+.section__header { max-width: 42rem; margin-bottom: 2.5rem; }
+@media (min-width: 768px) { .container { padding-inline: 2rem; } .section { padding-block: 6rem; } .section__header { margin-bottom: 3rem; } }
+
+/* 4. Komponenty ------------------------------------------------------------ */
+
+/* Typografie */
+.eyebrow {
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-terracotta-text);
+}
+
+.eyebrow--light {
+  color: var(--color-terracotta-soft);
+}
+
+.section__title,
+.page-hero__title {
+  margin-bottom: 1rem;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.lead {
+  font-size: 1.125rem;
+  color: var(--color-muted);
+}
+
+.text-link {
+  color: var(--color-terracotta-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.text-link:hover {
+  color: var(--color-espresso);
+}
+
+/* Tlačítka */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.button--primary {
+  background: var(--color-terracotta-strong);
+  color: #fff;
+}
+
+.button--primary:hover {
+  background: var(--color-terracotta-deep);
+}
+
+.button--ghost {
+  border-color: rgba(255, 253, 249, 0.75);
+  color: var(--color-milk);
+}
+
+.button--ghost:hover {
+  background: rgba(255, 253, 249, 0.14);
+}
+
+.button--light {
+  background: var(--color-milk);
+  color: var(--color-espresso);
+}
+
+.button--light:hover {
+  background: var(--color-cream);
+}
+
+.button--outline {
+  border-color: var(--color-espresso);
+  background: transparent;
+  color: var(--color-espresso);
+}
+
+.button--outline:hover {
+  background: var(--color-espresso);
+  color: var(--color-milk);
+}
+
+.button--large {
+  padding: 0.95rem 1.75rem;
+  font-size: 1rem;
+}
+
+/* Karty */
+.card {
+  padding: 1.75rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-milk);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Header a navigace */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid transparent;
+  background: rgba(246, 240, 232, 0.94);
+  backdrop-filter: saturate(140%) blur(10px);
+  transition: box-shadow var(--transition), border-color var(--transition);
+}
+
+.site-header.is-scrolled {
+  border-bottom-color: var(--color-line);
+  box-shadow: var(--shadow-sm);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: var(--header-height);
+}
+
+.brand {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.brand__logo {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand__name {
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+.brand__claim {
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.brand--light {
+  color: var(--color-milk);
+}
+
+.brand--light .brand__claim {
+  color: rgba(255, 253, 249, 0.7);
+}
+
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+}
+
+.nav-toggle__bar,
+.nav-toggle__bar::before,
+.nav-toggle__bar::after {
+  display: block;
+  width: 1.25rem;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform var(--transition), background-color var(--transition);
+}
+
+.nav-toggle__bar {
+  position: relative;
+}
+
+.nav-toggle__bar::before,
+.nav-toggle__bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+
+.nav-toggle__bar::before {
+  top: -6px;
+}
+
+.nav-toggle__bar::after {
+  top: 6px;
+}
+
+.nav-toggle[aria-expanded='true'] .nav-toggle__bar {
+  background: transparent;
+}
+
+.nav-toggle[aria-expanded='true'] .nav-toggle__bar::before {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded='true'] .nav-toggle__bar::after {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.site-nav {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: none;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 0.5rem 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-cream);
+  box-shadow: var(--shadow-md);
+}
+
+.site-nav.is-open {
+  display: flex;
+}
+
+.site-nav__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-nav__link {
+  display: block;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--color-line);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.site-nav__link:hover,
+.site-nav__link[aria-current] {
+  color: var(--color-terracotta-text);
+}
+
+@media (min-width: 768px) {
+  .nav-toggle {
+    display: none;
+  }
+
+  .site-nav {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .site-nav__list {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .site-nav__link {
+    padding: 0.4rem 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+
+  .site-nav__link:hover,
+  .site-nav__link[aria-current] {
+    border-bottom-color: var(--color-terracotta);
+    color: var(--color-espresso);
+  }
+}
+
+@media (min-width: 1100px) {
+  .site-nav {
+    gap: 2rem;
+  }
+
+  .site-nav__list {
+    gap: 1.5rem;
+  }
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: min(88vh, 46rem);
+  overflow: hidden;
+  color: var(--color-milk);
+  isolation: isolate;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to top, rgba(28, 19, 14, 0.88) 0%, rgba(28, 19, 14, 0.5) 45%, rgba(28, 19, 14, 0.15) 100%);
+}
+
+.hero__image {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__content {
+  padding-block: 5rem 3.5rem;
+}
+
+.hero__title {
+  max-width: 12ch;
+  font-family: var(--font-heading);
+  font-size: clamp(2.75rem, 1.5rem + 6vw, 5.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.hero__tagline {
+  max-width: 34rem;
+  margin-top: 1.25rem;
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  color: rgba(255, 253, 249, 0.92);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .hero::after {
+    background: linear-gradient(100deg, rgba(28, 19, 14, 0.85) 0%, rgba(28, 19, 14, 0.55) 45%, rgba(28, 19, 14, 0.1) 80%);
+  }
+
+  .hero__content {
+    padding-block: 6rem 5rem;
+  }
+}
+
+/* O nás */
+.about__grid {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.about__image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  box-shadow: var(--shadow-md);
+}
+
+.about__content p + p {
+  margin-top: 1rem;
+}
+
+.about__content .lead {
+  margin-bottom: 1rem;
+}
+
+.values {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.value {
+  padding: 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-milk);
+}
+
+.value__title {
+  margin-bottom: 0.35rem;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.value__title::before {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: 3px;
+  margin-bottom: 0.75rem;
+  border-radius: 2px;
+  background: var(--color-terracotta);
+}
+
+.value__text {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+@media (min-width: 768px) {
+  .about__image {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (min-width: 1100px) {
+  .about__grid {
+    grid-template-columns: 5fr 7fr;
+    align-items: center;
+    gap: 4rem;
+  }
+
+  .about__image {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+/* Nabídka */
+.menu__grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.menu-card {
+  background: var(--color-cream);
+  box-shadow: none;
+}
+
+.menu-card__title {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-terracotta);
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.menu-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.menu-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+}
+
+.menu-item__name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.menu-item__name::after {
+  content: '';
+  flex: 1;
+  min-width: 1rem;
+  margin-right: 0.5rem;
+  border-bottom: 1px dotted var(--color-line-strong);
+}
+
+.menu-item__price {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--color-terracotta-text);
+}
+
+.menu-item__note {
+  grid-column: 1 / -1;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-muted);
+}
+
+.menu__figure {
+  margin-top: 2.5rem;
+}
+
+.menu__image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+}
+
+.menu__caption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+@media (min-width: 768px) {
+  .menu__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .menu__image {
+    aspect-ratio: 16 / 7;
+  }
+}
+
+@media (min-width: 1100px) {
+  .menu__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Galerie */
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 9rem;
+  gap: 0.75rem;
+}
+
+.gallery__item {
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.gallery__item--wide {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.gallery__item--tall {
+  grid-row: span 2;
+}
+
+.gallery__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 600ms ease;
+}
+
+.gallery__item:hover .gallery__image {
+  transform: scale(1.04);
+}
+
+@media (min-width: 768px) {
+  .gallery__grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 13rem;
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .gallery__grid {
+    grid-auto-rows: 15rem;
+  }
+}
+
+/* Rezervační výzva */
+.cta-band {
+  padding-block: 3.5rem;
+  background: linear-gradient(135deg, var(--color-terracotta-strong), var(--color-terracotta-deep));
+  color: var(--color-milk);
+  scroll-margin-top: var(--header-height);
+}
+
+.cta-band__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.cta-band__title {
+  margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.cta-band__text {
+  max-width: 38rem;
+  color: rgba(255, 253, 249, 0.92);
+}
+
+@media (min-width: 768px) {
+  .cta-band {
+    padding-block: 4.5rem;
+  }
+
+  .cta-band__inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* Návštěva */
+.visit__grid {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.visit__list {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.visit__item {
+  display: grid;
+  gap: 0.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.visit__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.visit__value {
+  font-size: 1.0625rem;
+}
+
+.visit__note {
+  margin-top: 1.5rem;
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+
+.visit__image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 768px) {
+  .visit__item {
+    grid-template-columns: 9rem 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .visit__grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4rem;
+  }
+}
+
+/* Footer */
+.site-footer {
+  padding-top: 3.5rem;
+  background: var(--color-espresso);
+  color: rgba(255, 253, 249, 0.85);
+}
+
+.site-footer__inner {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.site-footer__text {
+  max-width: 24rem;
+  margin-top: 1rem;
+  font-size: 0.9375rem;
+}
+
+.site-footer__title {
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-terracotta-soft);
+}
+
+.site-footer__address {
+  font-style: normal;
+  line-height: 1.8;
+}
+
+.site-footer__link {
+  border-bottom: 1px solid rgba(255, 253, 249, 0.3);
+  color: var(--color-milk);
+  text-decoration: none;
+  transition: border-color var(--transition);
+}
+
+.site-footer__link:hover {
+  border-bottom-color: var(--color-milk);
+}
+
+.site-footer__note {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: rgba(255, 253, 249, 0.65);
+}
+
+.site-footer__bottom {
+  margin-top: 3rem;
+  border-top: 1px solid rgba(255, 253, 249, 0.12);
+  font-size: 0.8125rem;
+  color: rgba(255, 253, 249, 0.65);
+}
+
+.site-footer__bottom-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-block: 1.5rem;
+}
+
+.site-footer__admin {
+  font-size: 0.75rem;
+  color: inherit;
+}
+
+@media (min-width: 768px) {
+  .site-footer__inner {
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3rem;
+  }
+}
+
+/* Záhlaví podstránek */
+.page-hero {
+  padding-block: 3rem 2rem;
+}
+
+.page-hero__title {
+  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+}
+
+.page-hero .lead {
+  max-width: 40rem;
+}
+
+@media (min-width: 768px) {
+  .page-hero {
+    padding-block: 4rem 2.5rem;
+  }
+}
+
+/* Rezervace: rozvržení a formulář */
+.reservation {
+  display: grid;
+  gap: 1.5rem;
+  padding-bottom: 5rem;
+}
+
+.reservation__main {
+  min-width: 0;
+}
+
+.reservation-form {
+  display: grid;
+  gap: 2.25rem;
+  padding: 1.5rem;
+}
+
+.form-step {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.form-step__title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+.form-step__number {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-espresso);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-milk);
+}
+
+.reservation-form__submit {
+  width: 100%;
+}
+
+.form-message {
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-error-bg);
+  font-weight: 500;
+  color: var(--color-error);
+}
+
+.form-message:empty {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .reservation-form {
+    padding: 2.5rem;
+  }
+
+  .reservation-form__submit {
+    justify-self: start;
+    width: auto;
+  }
+}
+
+@media (min-width: 1100px) {
+  .reservation {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 2rem;
+  }
+}
+
+/* Rezervace: čipy dnů */
+.chip-list {
+  display: flex;
+  gap: 0.5rem;
+  margin-inline: -0.375rem;
+  padding: 0.375rem 0.375rem 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.chip {
+  position: relative;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.chip__input,
+.slot__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.chip__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 4.75rem;
+  padding: 0.625rem 0.875rem;
+  border: 1.5px solid var(--color-line-strong);
+  border-radius: var(--radius);
+  background: var(--color-milk);
+  line-height: 1.3;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.chip__weekday {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.chip__date {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+
+.chip__input:hover + .chip__body {
+  border-color: var(--color-espresso);
+}
+
+.chip__input:checked + .chip__body {
+  border-color: var(--color-espresso);
+  background: var(--color-espresso);
+  color: var(--color-milk);
+}
+
+.chip__input:checked + .chip__body .chip__date {
+  color: rgba(255, 253, 249, 0.75);
+}
+
+.chip__input:focus-visible + .chip__body,
+.slot__input:focus-visible + .slot__body {
+  outline: 3px solid var(--color-terracotta);
+  outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+  .chip-list {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+}
+
+/* Rezervace: časové sloty */
+.slots-status {
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+
+.slots-status:empty {
+  display: none;
+}
+
+.slot-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: 0.5rem;
+}
+
+.slot-list:empty {
+  display: none;
+}
+
+.slot {
+  position: relative;
+}
+
+.slot__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 0.5rem;
+  border: 1.5px solid var(--color-line-strong);
+  border-radius: var(--radius);
+  background: var(--color-milk);
+  line-height: 1.3;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.slot__time {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.slot__info {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.slot__input:hover + .slot__body {
+  border-color: var(--color-espresso);
+}
+
+.slot__input:checked + .slot__body {
+  border-color: var(--color-terracotta-strong);
+  background: var(--color-terracotta-strong);
+  color: #fff;
+}
+
+.slot__input:checked + .slot__body .slot__info {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.slot__input:disabled {
+  cursor: not-allowed;
+}
+
+.slot__input:disabled + .slot__body {
+  border-style: dashed;
+  background: transparent;
+  color: rgba(42, 30, 23, 0.45);
+}
+
+.slot__input:disabled + .slot__body .slot__time {
+  text-decoration: line-through;
+}
+
+.slot__input:disabled + .slot__body .slot__info {
+  color: inherit;
+}
+
+/* Rezervace: pole formuláře */
+.field {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.field__label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.field__input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font-size: 1rem;
+  transition: border-color var(--transition);
+}
+
+.field__input::placeholder {
+  color: #9C8E83;
+}
+
+.field__input:hover {
+  border-color: var(--color-espresso);
+}
+
+.field__input:focus-visible {
+  border-color: var(--color-terracotta-strong);
+  outline-offset: 1px;
+}
+
+.field__input[aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+
+.field__hint {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+
+.field__error {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-error);
+}
+
+.field__error:empty {
+  display: none;
+}
+
+/* Rezervace: potvrzení */
+.reservation-success {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  scroll-margin-top: calc(var(--header-height) + 1.5rem);
+}
+
+.reservation-success:focus {
+  outline: none;
+}
+
+.reservation-success__icon {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--color-success);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.reservation-success__title {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.reservation-success__text {
+  max-width: 32rem;
+  color: var(--color-muted);
+}
+
+.reservation-success__text strong {
+  color: var(--color-espresso);
+}
+
+.reservation-success__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* Rezervace: informační karty */
+.reservation__aside {
+  display: grid;
+  align-content: start;
+  gap: 1.5rem;
+}
+
+.info-card {
+  padding: 1.5rem;
+}
+
+.info-card__title {
+  margin-bottom: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.info-card--sage {
+  border-color: #CBD3C3;
+  background: var(--color-sage-light);
+}
+
+.info-card__hours {
+  margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.info-list {
+  display: grid;
+  gap: 0.625rem;
+  font-size: 0.9375rem;
+}
+
+.info-list li {
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.info-list li::before {
+  content: '';
+  position: absolute;
+  top: 0.6em;
+  left: 0;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--color-terracotta);
+}
+
+/* Chybové stránky (404, 500) */
+.status-page__inner {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  max-width: 40rem;
+  text-align: center;
+}
+
+.status-page__code {
+  font-family: var(--font-heading);
+  font-size: clamp(4rem, 3rem + 6vw, 7rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-terracotta);
+}
+
+.status-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}

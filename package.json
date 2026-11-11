@@ -1,0 +1,17 @@
+{
+  "name": "kavarna-holubnik",
+  "version": "1.0.0",
+  "description": "Ukázkový web fiktivní pražské kavárny s rezervacemi a administrací",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test \"tests/**/*.test.js\"",
+    "db:seed": "node src/db/seed.js"
+  }
+}

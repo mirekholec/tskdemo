@@ -1,0 +1,129 @@
+{
+	"mcpServers": {
+		"copilot-spaces": {
+			"url": "https://api.githubcopilot.com/mcp/x/copilot_spaces",
+			"type": "http",
+			"version": "0.21.1"
+		},
+		"notion": {
+			"type": "http",
+			"url": "https://mcp.notion.com/mcp"
+		},
+		"atlassian": {
+			"type": "http",
+			"url": "https://mcp.atlassian.com/v1/mcp",
+			"gallery": "https://api.mcp.github.com",
+			"version": "1.1.1"
+		},
+		"azure-devops-services": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@azure-devops/mcp",
+				"mholec",
+				"-d",
+				"core",
+				"work",
+				"work-items"
+			]
+		},
+		"azure-devops-server": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@tiberriver256/mcp-server-azure-devops"
+			],
+			"env": {
+				"AZURE_DEVOPS_ORG_URL": "https://server:8080/tfs/DefaultCollection",
+				"AZURE_DEVOPS_AUTH_METHOD": "pat",
+				"AZURE_DEVOPS_PAT": "${input:AZURE_DEVOPS_PAT}",
+				"AZURE_DEVOPS_DEFAULT_PROJECT": "your-project-name"
+			}
+		},
+		"context7": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"@upstash/context7-mcp@1.0.31"
+			],
+			"env": {
+				"CONTEXT7_API_KEY": "${input:CONTEXT7_API_KEY}"
+			},
+			"gallery": "https://api.mcp.github.com",
+			"version": "1.0.31"
+		},
+		"ms-docs": {
+			"type": "http",
+			"url": "https://learn.microsoft.com/api/mcp"
+		},
+		"doist/todoist-ai": {
+			"tools": [
+				"find-tasks",
+				"fetch",
+				"find-projects",
+				"find-comments",
+				"add-comments",
+				"get-overview",
+				"search"
+			],
+			"type": "http",
+			"url": "https://ai.todoist.net/mcp",
+			"headers": {}
+		},
+		"restapi-cz": {
+			"type": "http",
+			"url": "https://restapi.cz/mcp",
+			"headers": {
+				"X-API-Key": "${input:RESTAPI_MCP_KEY}"
+			}
+		},
+		"local-rag": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"mcp-local-rag"
+			],
+			"env": {
+				"BASE_DIR": "/Users/mholec/Repository/_ai/spaces",
+				"DB_PATH": "/Users/mholec/Repository/_ai/spaces/.lancedb",
+				"CACHE_DIR": "/Users/mholec/.cache/mcp-local-rag-models",
+				"MODEL_NAME": "onnx-community/embeddinggemma-300m-ONNX",
+				"RAG_HYBRID_WEIGHT": "0.7",
+				"RAG_GROUPING": "similar"
+			}
+		}
+	},
+	"inputs": [
+		{
+			"id": "CONTEXT7_API_KEY",
+			"type": "promptString",
+			"description": "API key for authentication",
+			"password": true
+		},
+		{
+			"id": "RESTAPI_MCP_KEY",
+			"type": "promptString",
+			"description": "REST API MCP API key",
+			"password": true
+		},
+		{
+			"id": "ado_org",
+			"type": "promptString",
+			"description": "Azure DevOps organization name (e.g., contoso).",
+			"password": false
+		},
+		{
+			"id": "ado_domain",
+			"type": "promptString",
+			"description": "Repeat to enable specific domains: core, work, work-items, search, test-plans, repositories, wiki, pipelines, advanced-security.",
+			"password": false
+		},
+		{
+			"id": "AZURE_DEVOPS_PAT",
+			"type": "promptString",
+			"description": "PAT token",
+			"password": true
+		}
+	]
+}
