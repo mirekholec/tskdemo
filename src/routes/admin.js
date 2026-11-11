@@ -46,6 +46,8 @@ export function createAdminRoutes({ reservationService }) {
         const dateLabel = formatFullDate(parseIsoDate(reservation.date));
         return renderFragment('partials/admin-row', {
           ...reservation,
+          rowModifier: reservation.status === 'upcoming' ? '' : ` admin-table__row--${reservation.status}`,
+          dayBadge: reservation.status === 'upcoming' ? '' : 'Dnes',
           dateLabel,
           createdLabel: formatDateTime(parseSqlDateTime(reservation.createdAt)),
           confirmMessage: `Opravdu smazat rezervaci ${reservation.name} (${dateLabel} ${reservation.time})?`

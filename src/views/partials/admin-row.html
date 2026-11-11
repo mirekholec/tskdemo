@@ -1,5 +1,5 @@
-          <tr class="admin-table__row">
-            <td class="admin-table__cell">{{ dateLabel }}</td>
+          <tr class="admin-table__row{{ rowModifier }}">
+            <td class="admin-table__cell">{{ dateLabel }} <span class="admin-badge">{{ dayBadge }}</span></td>
             <td class="admin-table__cell admin-table__cell--strong">{{ time }}</td>
             <td class="admin-table__cell">{{ name }}</td>
             <td class="admin-table__cell"><a class="admin-link" href="tel:{{ phone }}">{{ phone }}</a></td>

@@ -1,7 +1,7 @@
 ---
 created: "2026-11-06"
-updated: "2026-11-06 13:08"
-lastChange: "Vytvořen popis přihlášení, session, kontroly přístupu, seznamu a mazání rezervací v administraci."
+updated: "2026-11-11 15:10"
+lastChange: "Seznam rezervací zvýrazňuje dnešní rezervace a tlumeně zobrazuje dnešní, které už proběhly."
 tags:
   - aplikace
   - administrace
@@ -28,7 +28,8 @@ Přihlášení ověřují jednotlivé handlery, nemá ho na starosti společná 
 ### Seznam rezervací
 
 - Seznam ukazuje rezervace od dnešního dne včetně, seřazené podle data, hodiny a pořadí vložení (PDF s. 7 „Seznam rezervací“; `src/db/reservations-repository.js:19–21`; `listUpcoming`, `src/services/reservation-service.js:166–172`).
-- Filtruje se jen podle data. Dnešní rezervace, které už proběhly, proto v seznamu zůstávají a nijak se neodlišují.
+- Filtruje se jen podle data, dnešní rezervace, které už proběhly, proto v seznamu zůstávají. Každá rezervace má stav, který počítá `listUpcoming`: `today` (dnešní), `past` (dnešní, jejíž hodinový slot už skončil, tedy `hodina < aktuální hodina`) a `upcoming` (další dny). Rezervace v probíhající hodině je stále `today`.
+- Dnešní řádky mají tónované pozadí, akcentní proužek a štítek „Dnes“. Proběhlé dnešní řádky jsou ztlumené (průhlednost, přeškrtnutý čas) a štítek mají také. Rozlišení řeší třídy `admin-table__row--today` a `admin-table__row--past` v `admin.css`; štítek v ostatních řádcích je prázdný a skrývá ho `:empty` (TASK-016).
 
 ### Mazání
 

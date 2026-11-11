@@ -157,6 +157,21 @@ describe('seznam a mazání', () => {
     ]);
   });
 
+  it('označí dnešní rezervace a ty, jejichž hodinový slot už skončil', () => {
+    service.createReservation({ ...VALID_INPUT, hour: 13 }, NOW);
+    service.createReservation({ ...VALID_INPUT, hour: 14 }, NOW);
+    service.createReservation({ ...VALID_INPUT, hour: 18 }, NOW);
+    service.createReservation({ ...VALID_INPUT, date: '2026-11-07', hour: 13 }, NOW);
+
+    const list = service.listUpcoming(new Date(2026, 10, 6, 14, 30));
+    assert.deepEqual(list.map((r) => `${r.time} ${r.status}`), [
+      '13:00 past',
+      '14:00 today',
+      '18:00 today',
+      '13:00 upcoming'
+    ]);
+  });
+
   it('nevypíše rezervace z minulých dnů', () => {
     service.createReservation(VALID_INPUT, NOW);
     assert.equal(service.listUpcoming(new Date(2026, 10, 7, 10, 0)).length, 0);

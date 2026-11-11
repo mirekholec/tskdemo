@@ -164,11 +164,17 @@ export function createReservationService({ repository, openingHours, capacityPer
   }
 
   // Rezervace od dnešního dne (včetně dnešních), seřazené podle data a času
+  // Každá rezervace dostane stav: 'today' (dnešní), 'past' (dnešní, jejíž hodinový slot už skončil)
+  // nebo 'upcoming' (následující dny)
   function listUpcoming(now) {
-    return repository.listFrom(toIsoDate(now)).map((reservation) => ({
-      ...reservation,
-      time: formatTime(reservation.hour)
-    }));
+    const todayIso = toIsoDate(now);
+    return repository.listFrom(todayIso).map((reservation) => {
+      let status = 'upcoming';
+      if (reservation.date === todayIso) {
+        status = reservation.hour < now.getHours() ? 'past' : 'today';
+      }
+      return { ...reservation, time: formatTime(reservation.hour), status };
+    });
   }
 
   function deleteReservation(id) {
