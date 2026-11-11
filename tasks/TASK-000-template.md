@@ -1,0 +1,34 @@
+---
+id: TASK-000
+todoist-id: todoistid (volitelné u todoist tasků)
+name: Název tasku
+status: new|inprogress|completed [nový je vždy new]
+---
+
+[Stručný popis úlohy v jedné větě]
+
+## Požadavky
+
+- [ požadavek ]
+- [ požadavek ]
+- 
+
+## Technické poznámky
+
+- [ poznámka ]
+- [ poznámka ]
+-  
+
+## Implementační plán
+
+Při návrhu implementačního plánu je nutné, aby následující kroky na sebe navazovaly v tomto pořadí. Je přitom možné mezi tyto kroky přidat kroky jiné.
+
+1. [ popis krok 1 ]
+2. [ popis krok 2 ]
+3. 
+
+## Akceptační kritéria
+
+- [ kritérium ]
+- [ kritérium ]
+- 
