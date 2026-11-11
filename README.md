@@ -13,8 +13,16 @@ Ukázková webová aplikace fiktivní kavárny na pražských Vinohradech pro š
 
 ## Spuštění
 
+macOS a Linux:
+
 ```bash
 ./run.sh
+```
+
+Windows (v PowerShellu `.\run.bat`):
+
+```bat
+run.bat
 ```
 
 Skript spustí server a otevře web v prohlížeči. Pokud už aplikace běží, jen otevře prohlížeč. Server ukončíte klávesami Ctrl+C.
@@ -44,6 +52,7 @@ Heslo i ostatní nastavení (adresa a kontakty kavárny, otevírací doba, kapac
 | Příkaz | Popis |
 |---|---|
 | `./run.sh` | Spustí server a otevře web v prohlížeči. |
+| `run.bat` | Totéž pro Windows. |
 | `npm start` | Spustí server. |
 | `npm run dev` | Spustí server a při změně souborů ho restartuje (`node --watch`). |
 | `npm test` | Spustí testy přes vestavěný `node --test`. |
