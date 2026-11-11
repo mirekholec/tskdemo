@@ -1,0 +1,77 @@
+name: 📋 Nový task
+description: Založení nového tasku pro kalendářovou aplikaci
+labels: ["feature"]
+body:
+  - type: input
+    attributes:
+      label: Summary
+      description: Stručné shrnutí tasku v jedné větě.
+      placeholder: "např. Měsíční pohled kalendáře"
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Priorita
+      description: Priorita tasku.
+      options:
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Story points
+      description: Odhadovaná náročnost v story pointech.
+      options:
+        - "1"
+        - "2"
+        - "3"
+        - "5"
+        - "8"
+        - "13"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Labels
+      description: Štítky oddělené čárkou (např. feature, view, ux).
+      placeholder: "feature, view"
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Popis
+      description: Podrobnější popis tasku – co se má udělat a proč.
+      placeholder: "Přidat do kalendáře měsíční pohled jako alternativu k týdennímu zobrazení."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Požadavky
+      description: Seznam konkrétních požadavků (každý na nový řádek s odrážkou).
+      placeholder: |
+        - Požadavek 1
+        - Požadavek 2
+        - Požadavek 3
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Technické poznámky
+      description: Technické detaily, doporučení implementace, na co si dát pozor.
+      placeholder: |
+        - Využít CSS Grid pro mřížku
+        - Data číst z localStorage
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Akceptační kritéria
+      description: Seznam kritérií pro ověření dokončení (každé na nový řádek jako checkbox).
+      placeholder: |
+        - [ ] Kritérium 1
+        - [ ] Kritérium 2
+        - [ ] Kritérium 3
+    validations:
+      required: true

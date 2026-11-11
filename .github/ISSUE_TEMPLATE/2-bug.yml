@@ -1,0 +1,38 @@
+name: 🐞 Nahlášení chyby
+description: Vytvořte hlášení o něčem, co nefunguje správně
+body:
+- type: checkboxes
+  attributes:
+    label: Existuje již issue pro tento problém?
+    description: Podívejte se, zda už neexistuje issue([skoleni-copilot-gcl/issues](https://github.com/mirekholec/skoleni-copilot-gcl/issues?q=is%3Aissue)).
+    options:
+    - label: Prohledal/a jsem existující issues
+      required: true
+- type: textarea
+  attributes:
+    label: Popis chyby
+    description: Jasný a stručný popis toho, v čem chyba spočívá.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Kroky k reprodukci
+    description: Popište postup, jak chybu vyvolat (např. 1. Otevři aplikaci, 2. Klikni na...).
+    placeholder: |
+      1. ...
+      2. ...
+      3. ...
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Skutečné chování
+    description: Co se děje — co aplikace dělá špatně?
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Očekávané chování
+    description: Co by se správně mělo stát?
+  validations:
+    required: false
