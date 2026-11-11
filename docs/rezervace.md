@@ -66,7 +66,7 @@ Ke každému slotu dne služba vrací počet volných míst `available`, který 
 ## Rozhodnutí a omezení
 
 - **Rezervace nemá stav** (potvrzená, zrušená, nepřišel) a mazání je fyzické. Potvrzuje se okamžitě, bez e-mailu a SMS. Host ji nemůže sám zrušit a potvrzení ho vyzve, ať zavolá (PDF s. 2–3, s. 9 „Datový model“, s. 11; `src/views/pages/reservation.html:52`).
-- **Pravidlo „stůl držíme 15 minut“ existuje jen jako text pro hosta.** Aplikace ho nevynucuje a rezervace zabírá místo ve slotu celou hodinu, ať host přijde, nebo ne (`src/views/pages/reservation.html:66`; `getSlots`). Rozpor v textech popisuje [verejny-web.md](verejny-web.md).
+- **Pravidlo „stůl držíme 15 minut“ existuje jen jako text pro hosta.** Aplikace ho nevynucuje a rezervace zabírá místo ve slotu celou hodinu, ať host přijde, nebo ne (`src/views/pages/reservation.html:66`; `getSlots`). Doba držení je v konfiguraci `reservations.holdMinutes` (15) a texty na webu ji berou odtud, viz [verejny-web.md](verejny-web.md).
 - **Změny konfigurace a existující data.** Konfigurace se načte při startu, takže změna se projeví až po restartu serveru (`npm run dev` restartuje sám). Rezervace jsou uložené jako místní datum a hodina bez časové zóny (`src/db/schema.sql:3–4`). Z toho plyne:
   - Po zúžení otevírací doby zůstanou v databázi rezervace v hodinách, které už nejsou sloty. Administrace je dál ukazuje, ale do dostupnosti se nezapočítají (`getSlots`, ř. 98; `listUpcoming`, ř. 166–172).
   - Po snížení `capacityPerSlot` pod současný počet služba další rezervace nepřijme, ale stávající nadpočetné nezruší. Hodnota `available` se ořízne na 0 (ř. 99).
@@ -77,7 +77,6 @@ Ke každému slotu dne služba vrací počet volných míst `available`, který 
 
 - **Plný a začatý slot vypadají stejně, i když je API rozlišit umí.** Podle PDF vrací API u slotu jen příznak `bookable` bez důvodu. Prohlížeč proto ukáže plný i začatý slot jako „obsazeno“ a dnešek může odpoledne vypadat plně obsazený, i když je kavárna prázdná (PDF s. 6 „Plný a začatý slot vypadají stejně“). API ale vrací i `available`, jak uvádí i PDF na s. 9 „JSON API“, a prohlížeč tuto hodnotu u nerezervovatelného slotu ignoruje (`src/assets/js/reservation.js:96`). Začatý slot s volným místem tedy jde poznat už dnes. Nepoznáme jen slot, který začal a zároveň je plný. Otevřená otázka: doplnit důvod do API, nebo stačí úprava v prohlížeči?
 - **Telefon:** PDF píše, že validace odstraňuje „jen mezery“. Kód na serveru i v prohlížeči odstraňuje všechny bílé znaky, tedy i tabulátory a nezlomitelné mezery (`src/services/reservation-service.js:113`, `src/assets/js/reservation.js:141`). U pomlček a jiných oddělovačů se kód chová podle PDF.
-- **Držení stolu 15 minut, nebo celou hodinu:** texty webu si odporují, viz [verejny-web.md](verejny-web.md).
 
 ## Zdroje
 

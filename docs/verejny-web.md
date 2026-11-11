@@ -16,7 +16,7 @@ One-page prezentace kavárny a stránka rezervace sdílejí layout i údaje z ko
 - **Kontakty a otevírací doba jdou z konfigurace.** Název, tagline, adresa, telefon, e-mail, adresa Instagramu a otevírací doba se do šablon dostávají jako globální proměnné `cafe.*` a `openingHours.*`. Změna v `src/config.js` se proto projeví najednou v úvodu, v sekci Návštěva, v patičce i na stránce rezervace (PDF s. 3 „Odkud se berou údaje“; `src/lib/template.js` `appGlobals()`, ř. 111–123; např. `src/views/sections/hero.html:4`, `src/views/sections/visit.html:10`, `src/views/partials/footer.html:11`, `src/views/pages/reservation.html:72`). Výjimky uvádí sekce Rozpory.
 - Odkazy `tel:` mají používat globální `cafe.phoneHref`, tedy telefon bez mezer (`src/lib/template.js:116–117`).
 - **Nabídka a ceny jsou statické HTML** ve fragmentu `src/views/sections/menu.html`. Každou změnu ceníku dělá správce webu v kódu (PDF s. 3).
-- **Texty o pravidlech rezervace jsou psané ručně** v několika fragmentech. Z konfigurace se bere jen počet dní dopředu (`daysAhead`) a otevírací doba. Délka slotu, kapacita ani doba, po kterou se stůl drží, se do textů nepropisují (PDF s. 3; `src/routes/pages.js:32`; `src/views/pages/reservation.html:64–67`; `src/views/sections/reservation-cta.html:5`).
+- **Texty o pravidlech rezervace jsou psané ručně** v několika fragmentech. Z konfigurace se berou počet dní dopředu (`daysAhead`), otevírací doba a doba držení stolu (`reservations.holdMinutes`, globální proměnná `{{ holdMinutes }}`). Délka slotu a kapacita se do textů nepropisují (PDF s. 3; `src/routes/pages.js:32`; `src/views/pages/reservation.html:64–67`; `src/views/sections/reservation-cta.html:5`).
 - Navigace vede na kotvy ve tvaru `/#sekce`, aby fungovala i ze stránky rezervace (PDF s. 3, kap. 2; `src/views/partials/header.html:18–21`).
 
 ## Rozhodnutí a omezení
@@ -29,12 +29,7 @@ One-page prezentace kavárny a stránka rezervace sdílejí layout i údaje z ko
 
 ## Rozpory a otevřené otázky
 
-- **Texty o držení stolu si odporují.**
-  - Úvod stránky rezervace slibuje, že stůl „podržíme celou hodinu“ (`src/views/pages/reservation.html:5`).
-  - Pás na úvodní stránce nabízí rezervaci „na celou hodinu“ (`src/views/sections/reservation-cta.html:5`).
-  - Postranní panel na stránce rezervace uvádí, že stůl držíme 15 minut od začátku rezervace (`src/views/pages/reservation.html:66`).
-
-  PDF říká, že platí 15 minut, a odkazuje přitom na část III. Texty v kódu opravené nejsou (PDF s. 4 „Texty o rezervaci si odporují“, s. 11 „Funkční omezení aktuální verze“, řádek Obsah). Pravidlo 15 minut nemá v aplikaci žádnou logiku, viz [rezervace.md](rezervace.md).
+- **Texty o držení stolu jsou sjednocené.** Rezervace platí na hodinový slot a stůl se drží `reservations.holdMinutes` (15) minut od začátku rezervace. Všechny tři texty (úvod a postranní panel stránky rezervace, pás `reservation-cta.html`) berou hodnotu z konfigurace přes `{{ holdMinutes }}`. Pravidlo nemá v aplikaci žádnou logiku, viz [rezervace.md](rezervace.md).
 - **Ne všechny údaje jdou z konfigurace.** Podle PDF nejsou otevírací doba ani Instagram v HTML natvrdo. Neplatí to úplně:
   - meta popis úvodní stránky obsahuje pevný text „Otevřeno denně 13–20 h.“ (`src/routes/pages.js:14`);
   - viditelný text odkazu „Instagram @kavarnaholubnik“ je v patičce natvrdo, z konfigurace jde jen adresa odkazu (`src/views/partials/footer.html:26`).
