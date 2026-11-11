@@ -1,0 +1,2 @@
+- složka inbox obsahuje vstupní materiály a nikdy její obsah nečti, pokud nejsi explicitně požádán
+- složka export obsahuje výstupní materiály a nikdy její obsah nečti, pokud nejsi explicitně požádán
