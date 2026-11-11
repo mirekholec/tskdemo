@@ -1,5 +1,12 @@
 {
 	"mcpServers": {
-		    
+		"doist/todoist-ai": {
+			"tools": [
+				"*"
+			],
+			"type": "http",
+			"url": "https://ai.todoist.net/mcp",
+			"headers": {}
+		}
 	}
 }
