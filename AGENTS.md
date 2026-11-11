@@ -1,2 +1,3 @@
 - složka inbox obsahuje vstupní materiály a nikdy její obsah nečti, pokud nejsi explicitně požádán
 - složka export obsahuje výstupní materiály a nikdy její obsah nečti, pokud nejsi explicitně požádán
+- složka docs obsahuje dokumentaci k projektu, pokud implementuješ novou funkcionalitu, zohledni relevantní soubory ve složce a po dokončené práce udržuj soubory ve složce aktuální
