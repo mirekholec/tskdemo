@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kanban úkolů</title>
+  <style>
+    /* ==========================================================================
+       Kanban úkolů – nástěnka nad Markdown soubory ve složkách tasks a tasks/completed
+       1. CSS reset  2. Společná nastavení a proměnné  3. Layout  4. Komponenty
+       ========================================================================== */
+
+    /* 1. CSS reset (Eric Meyer, v2.0) ------------------------------------------ */
+    html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
+    article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
+    body { line-height: 1; }
+    ol, ul { list-style: none; }
+    blockquote, q { quotes: none; }
+    blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+    table { border-collapse: collapse; border-spacing: 0; }
+
+    /* 2. Společná nastavení a proměnné ------------------------------------------ */
+    :root { --kanban-bg: #F3F4F6; --kanban-surface: #FFFFFF; --kanban-column: #E5E7EB; --kanban-text: #1F2937; --kanban-muted: #6B7280; --kanban-line: #D1D5DB; --kanban-accent: #2563EB; --kanban-accent-hover: #1D4ED8; --kanban-accent-soft: #DBEAFE; --kanban-success: #166534; --kanban-success-bg: #DCFCE7; --kanban-danger: #B91C1C; --kanban-danger-bg: #FEE2E2; --kanban-warning: #92400E; --kanban-warning-bg: #FEF3C7; --kanban-warning-line: #F59E0B; --kanban-radius: 8px; --kanban-shadow: 0 1px 2px rgba(17, 24, 39, 0.08), 0 1px 4px rgba(17, 24, 39, 0.06); --kanban-font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; --kanban-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: var(--kanban-font); font-size: 0.9375rem; line-height: 1.5; color: var(--kanban-text); background: var(--kanban-bg); -webkit-font-smoothing: antialiased; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    code { font-family: var(--kanban-mono); font-size: 0.875em; }
+    :focus-visible { outline: 3px solid var(--kanban-accent); outline-offset: 2px; }
+    [hidden] { display: none !important; }
+
+    /* 3. Layout ---------------------------------------------------------------- */
+    .kanban { min-height: 100vh; display: flex; flex-direction: column; }
+    .kanban-container { width: 100%; max-width: 80rem; margin-inline: auto; padding-inline: 1rem; }
+    .kanban-main { flex: 1; padding-block: 1.5rem 3rem; }
+    @media (min-width: 768px) { .kanban-container { padding-inline: 2rem; } }
+
+    /* 4. Komponenty ------------------------------------------------------------ */
+
+    /* Hlavička */
+    .kanban-header {
+      border-bottom: 1px solid var(--kanban-line);
+      background: var(--kanban-surface);
+    }
+
+    .kanban-header__inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem 1rem;
+      min-height: 4rem;
+      padding-block: 0.75rem;
+    }
+
+    .kanban-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .kanban-folder {
+      color: var(--kanban-muted);
+      font-size: 0.875rem;
+    }
+
+    .kanban-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Tlačítka */
+    .kanban-button {
+      padding: 0.4375rem 0.875rem;
+      border: 1px solid var(--kanban-line);
+      border-radius: 6px;
+      background: var(--kanban-surface);
+      font-weight: 600;
+    }
+
+    .kanban-button:hover {
+      background: var(--kanban-bg);
+    }
+
+    .kanban-button--primary {
+      border-color: var(--kanban-accent);
+      background: var(--kanban-accent);
+      color: #FFFFFF;
+    }
+
+    .kanban-button--primary:hover {
+      border-color: var(--kanban-accent-hover);
+      background: var(--kanban-accent-hover);
+    }
+
+    /* Hlášky */
+    .kanban-message {
+      margin-bottom: 1rem;
+      padding: 0.625rem 0.875rem;
+      border-radius: var(--kanban-radius);
+      background: var(--kanban-accent-soft);
+    }
+
+    /* Prázdná hláška zůstává v DOM (role="status"), jen nezabírá místo */
+    .kanban-message:empty {
+      margin: 0;
+      padding: 0;
+    }
+
+    .kanban-message--success {
+      background: var(--kanban-success-bg);
+      color: var(--kanban-success);
+    }
+
+    .kanban-message--error {
+      background: var(--kanban-danger-bg);
+      color: var(--kanban-danger);
+    }
+
+    /* Panel s výzvou */
+    .kanban-panel {
+      max-width: 42rem;
+      padding: 1.5rem;
+      border: 1px solid var(--kanban-line);
+      border-radius: var(--kanban-radius);
+      background: var(--kanban-surface);
+      box-shadow: var(--kanban-shadow);
+    }
+
+    .kanban-panel__title {
+      margin-bottom: 0.5rem;
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    .kanban-panel__text {
+      margin-bottom: 1rem;
+      color: var(--kanban-muted);
+    }
+
+    .kanban-panel__text:last-child {
+      margin-bottom: 0;
+    }
+
+    .kanban-path {
+      color: var(--kanban-text);
+      word-break: break-all;
+    }
+
+    /* Upozornění */
+    .kanban-notices {
+      margin-bottom: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--kanban-radius);
+      background: var(--kanban-warning-bg);
+      color: var(--kanban-warning);
+    }
+
+    .kanban-notices__title {
+      font-weight: 700;
+    }
+
+    .kanban-notices__list {
+      margin-top: 0.25rem;
+      padding-left: 1.25rem;
+      list-style: disc;
+      font-size: 0.875rem;
+    }
+
+    /* Sloupce */
+    .kanban-board {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .kanban-board {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .kanban-column {
+      display: flex;
+      flex-direction: column;
+      min-height: 16rem;
+      padding: 0.75rem;
+      border: 2px dashed transparent;
+      border-radius: var(--kanban-radius);
+      background: var(--kanban-column);
+      transition: background-color 150ms ease, border-color 150ms ease;
+    }
+
+    .kanban-column--over {
+      border-color: var(--kanban-accent);
+      background: var(--kanban-accent-soft);
+    }
+
+    .kanban-column__header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .kanban-column__title {
+      font-weight: 700;
+    }
+
+    .kanban-column__status {
+      color: var(--kanban-muted);
+      font-family: var(--kanban-mono);
+      font-size: 0.75rem;
+    }
+
+    .kanban-column__count {
+      min-width: 1.75rem;
+      margin-left: auto;
+      padding-inline: 0.5rem;
+      border-radius: 999px;
+      background: var(--kanban-surface);
+      color: var(--kanban-muted);
+      font-size: 0.8125rem;
+      text-align: center;
+    }
+
+    .kanban-cards {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .kanban-cards:empty::before {
+      content: 'Žádné úkoly';
+      padding-block: 1.5rem;
+      color: var(--kanban-muted);
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    /* Karta úkolu */
+    .kanban-card {
+      padding: 0.625rem 0.75rem;
+      border-left: 3px solid transparent;
+      border-radius: 6px;
+      background: var(--kanban-surface);
+      box-shadow: var(--kanban-shadow);
+      cursor: grab;
+    }
+
+    .kanban-card:active {
+      cursor: grabbing;
+    }
+
+    .kanban-card--misplaced {
+      border-left-color: var(--kanban-warning-line);
+    }
+
+    .kanban-card--dragging {
+      opacity: 0.4;
+    }
+
+    .kanban-card--saving {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .kanban-card__id {
+      display: block;
+      color: var(--kanban-muted);
+      font-family: var(--kanban-mono);
+      font-size: 0.75rem;
+    }
+
+    .kanban-card__name {
+      display: block;
+      font-weight: 600;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+<body class="kanban">
+  <header class="kanban-header">
+    <div class="kanban-container kanban-header__inner">
+      <div>
+        <h1 class="kanban-title">Kanban úkolů</h1>
+        <p class="kanban-folder" id="folder" hidden></p>
+      </div>
+      <div class="kanban-actions">
+        <button type="button" class="kanban-button" id="refresh" hidden>Obnovit</button>
+        <button type="button" class="kanban-button" id="pick" hidden>Změnit složku</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="kanban-main">
+    <div class="kanban-container">
+      <p class="kanban-message" id="message" role="status"></p>
+
+      <section class="kanban-panel" id="unsupported" hidden>
+        <h2 class="kanban-panel__title">Prohlížeč neumí pracovat se složkami na disku</h2>
+        <p class="kanban-panel__text">Nástěnka čte a zapisuje soubory přes File System Access API. To podporují jen Google Chrome a Microsoft Edge, otevřete proto tento soubor v jednom z nich.</p>
+      </section>
+
+      <section class="kanban-panel" id="intro" hidden>
+        <h2 class="kanban-panel__title">Připojte složku s úkoly</h2>
+        <p class="kanban-panel__text" id="intro-pick">Nástěnka čte a upravuje Markdown soubory přímo na disku. Vyberte složku <code class="kanban-path" id="expected-path">tasks</code> a povolte prohlížeči úpravy souborů. Volbu si nástěnka zapamatuje.</p>
+        <p class="kanban-panel__text" id="intro-permission" hidden>Po novém otevření stránky je potřeba znovu povolit přístup ke složce s úkoly.</p>
+        <button type="button" class="kanban-button kanban-button--primary" id="connect">Vybrat složku</button>
+      </section>
+
+      <section class="kanban-notices" id="notices" aria-labelledby="notices-title" hidden>
+        <h2 class="kanban-notices__title" id="notices-title">Upozornění</h2>
+        <ul class="kanban-notices__list" id="notice-list"></ul>
+      </section>
+
+      <div class="kanban-board" id="board" hidden>
+        <section class="kanban-column" data-status="new" aria-labelledby="column-new">
+          <header class="kanban-column__header">
+            <h2 class="kanban-column__title" id="column-new">Nové</h2>
+            <span class="kanban-column__status">new</span>
+            <span class="kanban-column__count" data-count>0</span>
+          </header>
+          <ul class="kanban-cards" data-cards></ul>
+        </section>
+        <section class="kanban-column" data-status="inprogress" aria-labelledby="column-inprogress">
+          <header class="kanban-column__header">
+            <h2 class="kanban-column__title" id="column-inprogress">Rozpracované</h2>
+            <span class="kanban-column__status">inprogress</span>
+            <span class="kanban-column__count" data-count>0</span>
+          </header>
+          <ul class="kanban-cards" data-cards></ul>
+        </section>
+        <section class="kanban-column" data-status="completed" aria-labelledby="column-completed">
+          <header class="kanban-column__header">
+            <h2 class="kanban-column__title" id="column-completed">Hotové</h2>
+            <span class="kanban-column__status">completed</span>
+            <span class="kanban-column__count" data-count>0</span>
+          </header>
+          <ul class="kanban-cards" data-cards></ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    'use strict';
+
+    // ---------------------------------------------------------------------------
+    // Úkoly v Markdown souborech
+    // ---------------------------------------------------------------------------
+
+    const STATUSES = ['new', 'inprogress', 'completed'];
+    const STATUS_LABELS = { new: 'Nové', inprogress: 'Rozpracované', completed: 'Hotové' };
+    const COMPLETED_FOLDER = 'completed';
+    const TEMPLATE_FILE = 'TASK-000-template.md';
+
+    // fatal: soubor s neplatným UTF-8 se přeskočí, aby ho zápis nepoškodil; ignoreBOM: případný BOM zůstane zachovaný
+    const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
+
+    function folderFor(status) {
+      return status === 'completed' ? COMPLETED_FOLDER : '';
+    }
+
+    function folderLabel(root, folder) {
+      return folder ? `${root.name}/${folder}/` : `${root.name}/`;
+    }
+
+    // Řádky i s jejich konci, aby šel soubor po úpravě složit zpět beze změny
+    function splitLines(text) {
+      return text.split(/(?<=\n)/);
+    }
+
+    // Index řádku s koncovým --- YAML hlavičky, nebo -1, když soubor hlavičku nemá
+    function frontmatterEnd(lines) {
+      if (lines[0].replace(/^\uFEFF/, '').trimEnd() !== '---') return -1;
+      return lines.findIndex((line, index) => index > 0 && line.trimEnd() === '---');
+    }
+
+    function parseScalar(raw) {
+      const value = raw.trim();
+      const doubleQuoted = value.match(/^"((?:[^"\\]|\\.)*)"/);
+      if (doubleQuoted) {
+        try {
+          return JSON.parse(`"${doubleQuoted[1]}"`);
+        } catch {
+          return doubleQuoted[1];
+        }
+      }
+      const singleQuoted = value.match(/^'((?:[^']|'')*)'/);
+      if (singleQuoted) return singleQuoted[1].replaceAll("''", "'");
+      return value.replace(/\s+#.*$/, '');
+    }
+
+    function parseTask(text) {
+      const lines = splitLines(text);
+      const end = frontmatterEnd(lines);
+      if (end === -1) return { error: 'chybí YAML hlavička' };
+      const data = new Map();
+      for (const line of lines.slice(1, end)) {
+        const match = line.replace(/\r?\n$/, '').match(/^([A-Za-z_][\w-]*)[ \t]*:(.*)$/);
+        if (match && !data.has(match[1])) data.set(match[1], parseScalar(match[2]).trim());
+      }
+      const id = data.get('id') ?? '';
+      const status = data.get('status') ?? '';
+      if (!id) return { error: 'v YAML hlavičce chybí id' };
+      if (!status) return { error: 'v YAML hlavičce chybí status' };
+      if (!STATUSES.includes(status.toLowerCase())) return { error: `neplatný status „${status}“` };
+      return { id, name: data.get('name') ?? '', status: status.toLowerCase() };
+    }
+
+    // Přepíše hodnotu status v YAML hlavičce, zbytek souboru včetně konců řádků zůstane beze změny
+    function setStatus(text, status) {
+      const lines = splitLines(text);
+      const end = frontmatterEnd(lines);
+      let found = false;
+      for (let index = 1; index < end; index++) {
+        const match = lines[index].match(/^status[ \t]*:([^\r\n]*)(\r?\n)?$/);
+        if (!match) continue;
+        const comment = match[1].match(/\s+#.*$/)?.[0] ?? '';
+        lines[index] = `status: ${status}${comment}${match[2] ?? ''}`;
+        found = true;
+      }
+      if (!found) throw new Error('v YAML hlavičce chybí status');
+      return lines.join('');
+    }
+
+    async function readText(fileHandle) {
+      const file = await fileHandle.getFile();
+      const bytes = await file.arrayBuffer();
+      try {
+        return decoder.decode(bytes);
+      } catch {
+        throw new Error('soubor není v kódování UTF-8');
+      }
+    }
+
+    async function writeText(fileHandle, text) {
+      const writable = await fileHandle.createWritable();
+      try {
+        await writable.write(text);
+        await writable.close();
+      } catch (error) {
+        await writable.abort().catch(() => {});
+        throw error;
+      }
+    }
+
+    async function getFolder(parent, name) {
+      try {
+        return await parent.getDirectoryHandle(name);
+      } catch (error) {
+        if (error.name === 'NotFoundError') return null;
+        throw error;
+      }
+    }
+
+    async function fileExists(folder, name) {
+      try {
+        await folder.getFileHandle(name);
+        return true;
+      } catch (error) {
+        if (error.name === 'NotFoundError') return false;
+        if (error.name === 'TypeMismatchError') return true;
+        throw error;
+      }
+    }
+
+    function isTaskFile(name) {
+      return name.toLowerCase().endsWith('.md') && !name.startsWith('.') && name !== TEMPLATE_FILE;
+    }
+
+    function compareTasks(a, b) {
+      return a.id.localeCompare(b.id, 'cs', { numeric: true }) || a.path.localeCompare(b.path, 'cs');
+    }
+
+    async function loadTasks(root) {
+      const tasks = [];
+      const skipped = [];
+      const folders = [{ dir: root, folder: '' }];
+      const completedDir = await getFolder(root, COMPLETED_FOLDER);
+      if (completedDir) folders.push({ dir: completedDir, folder: COMPLETED_FOLDER });
+
+      for (const { dir, folder } of folders) {
+        for await (const handle of dir.values()) {
+          if (handle.kind !== 'file' || !isTaskFile(handle.name)) continue;
+          const path = folder ? `${folder}/${handle.name}` : handle.name;
+          let task;
+          try {
+            task = parseTask(await readText(handle));
+          } catch (error) {
+            task = { error: error.message };
+          }
+          if (task.error) {
+            skipped.push({ path, text: `${path} – ${task.error}, soubor se nezobrazuje.` });
+            continue;
+          }
+          tasks.push({ ...task, path, fileName: handle.name, folder, dir, handle, misplaced: folder !== folderFor(task.status) });
+        }
+      }
+
+      tasks.sort(compareTasks);
+      skipped.sort((a, b) => a.path.localeCompare(b.path, 'cs'));
+      const notices = skipped.map((item) => item.text);
+      for (const [id, group] of Map.groupBy(tasks, (task) => task.id)) {
+        if (group.length > 1) notices.push(`ID ${id} má více souborů: ${group.map((task) => task.path).join(', ')}.`);
+      }
+      for (const task of tasks.filter((item) => item.misplaced)) {
+        notices.push(`${task.path} – se stavem ${task.status} patří do složky ${folderLabel(root, folderFor(task.status))}. Přetáhněte kartu znovu do sloupce ${STATUS_LABELS[task.status]} a soubor se přesune.`);
+      }
+      return { tasks, notices };
+    }
+
+    // Zapíše nový stav a přesune soubor do složky, kam podle stavu patří. Vrací novou cestu souboru.
+    async function changeStatus(root, task, status) {
+      const text = await readText(task.handle);
+      const current = parseTask(text);
+      if (current.error || current.id !== task.id) {
+        throw new Error('soubor se mezitím změnil, zkontrolujte ho a obnovte nástěnku');
+      }
+      const updated = current.status === status ? text : setStatus(text, status);
+      const folder = folderFor(status);
+      if (folder === task.folder) {
+        if (updated !== text) await writeText(task.handle, updated);
+        return task.path;
+      }
+
+      const target = folder ? await root.getDirectoryHandle(folder, { create: true }) : root;
+      const path = folder ? `${folder}/${task.fileName}` : task.fileName;
+      if (await fileExists(target, task.fileName)) {
+        throw new Error(`soubor ${path} už existuje, přesun by ho přepsal`);
+      }
+      // Přesun = zápis nové kopie a smazání původního souboru, to podporují všechny prohlížeče s File System Access API
+      const copy = await target.getFileHandle(task.fileName, { create: true });
+      try {
+        await writeText(copy, updated);
+      } catch (error) {
+        await target.removeEntry(task.fileName).catch(() => {});
+        throw error;
+      }
+      try {
+        await task.dir.removeEntry(task.fileName);
+      } catch (error) {
+        throw new Error(`nový soubor ${path} je uložený, ale původní ${task.path} se nepodařilo smazat (${error.message})`);
+      }
+      return path;
+    }
+
+    // ---------------------------------------------------------------------------
+    // Nástěnka
+    // ---------------------------------------------------------------------------
+
+    const elements = {
+      folder: document.getElementById('folder'),
+      refresh: document.getElementById('refresh'),
+      pick: document.getElementById('pick'),
+      message: document.getElementById('message'),
+      unsupported: document.getElementById('unsupported'),
+      intro: document.getElementById('intro'),
+      introPick: document.getElementById('intro-pick'),
+      introPermission: document.getElementById('intro-permission'),
+      expectedPath: document.getElementById('expected-path'),
+      connect: document.getElementById('connect'),
+      notices: document.getElementById('notices'),
+      noticeList: document.getElementById('notice-list'),
+      board: document.getElementById('board'),
+    };
+    const columns = new Map(STATUSES.map((status) => [status, elements.board.querySelector(`[data-status="${status}"]`)]));
+    const state = { view: '', dir: null, tasks: new Map(), signature: '', dragKey: null, focusKey: null };
+
+    // Uložená složka i výchozí místo výběru patří ke konkrétní kopii stránky, aby si kopie repozitáře nepletly složky
+    const pageKey = location.href.replace(/[?#].*$/, '');
+    const pickerId = `kanban-${hash(pageKey)}`;
+    // Složka, ve které stránka leží (jen při otevření ze souboru)
+    const pageFolder = location.protocol === 'file:' ? decodeURIComponent(location.pathname).replace(/\/[^/]*$/, '') : '';
+    const pageFolderName = pageFolder.split('/').pop();
+
+    function hash(text) {
+      let value = 0x811c9dc5;
+      for (let index = 0; index < text.length; index++) {
+        value = Math.imul(value ^ text.charCodeAt(index), 0x01000193);
+      }
+      return (value >>> 0).toString(36);
+    }
+
+    function openDatabase() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open('tasks-kanban', 1);
+        request.onupgradeneeded = () => request.result.createObjectStore('folders');
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function withStore(mode, action) {
+      const db = await openDatabase();
+      try {
+        return await new Promise((resolve, reject) => {
+          const transaction = db.transaction('folders', mode);
+          const request = action(transaction.objectStore('folders'));
+          transaction.oncomplete = () => resolve(request.result);
+          transaction.onerror = () => reject(transaction.error);
+          transaction.onabort = () => reject(transaction.error);
+        });
+      } finally {
+        db.close();
+      }
+    }
+
+    // Načítání a přesuny běží za sebou, aby se nepřekrývaly
+    let queue = Promise.resolve();
+    function serial(job) {
+      const run = queue.then(job);
+      queue = run.catch(() => {});
+      return run;
+    }
+
+    let messageTimer;
+    function showMessage(text, type = 'info') {
+      clearTimeout(messageTimer);
+      elements.message.className = `kanban-message kanban-message--${type}`;
+      elements.message.textContent = text;
+      if (type === 'success') messageTimer = setTimeout(() => showMessage(''), 4000);
+    }
+
+    function describeError(error) {
+      switch (error.name) {
+        case 'NotFoundError': return 'soubor nebo složka už neexistuje';
+        case 'NotAllowedError':
+        case 'SecurityError': return 'prohlížeč nepovolil přístup ke složce';
+        case 'NoModificationAllowedError': return 'soubor je právě uzamčený, zkuste to znovu';
+        default: return error.message;
+      }
+    }
+
+    function setView(view) {
+      state.view = view;
+      elements.unsupported.hidden = view !== 'unsupported';
+      elements.intro.hidden = view !== 'pick' && view !== 'permission';
+      elements.introPick.hidden = view !== 'pick';
+      elements.introPermission.hidden = view !== 'permission';
+      elements.connect.textContent = view === 'permission' ? 'Povolit přístup' : 'Vybrat složku';
+      elements.board.hidden = view !== 'board';
+      elements.notices.hidden = view !== 'board' || elements.noticeList.children.length === 0;
+      elements.refresh.hidden = view !== 'board';
+      elements.pick.hidden = view !== 'board' && view !== 'permission';
+      elements.folder.hidden = elements.pick.hidden || !state.dir;
+      elements.folder.textContent = state.dir ? `Složka: ${state.dir.name}` : '';
+    }
+
+    function createCard(task) {
+      const card = document.createElement('li');
+      card.className = task.misplaced ? 'kanban-card kanban-card--misplaced' : 'kanban-card';
+      card.draggable = true;
+      card.tabIndex = 0;
+      card.dataset.key = task.path;
+      card.title = `${task.path}\nPřesun: přetažením nebo klávesami ← →`;
+      card.setAttribute('aria-keyshortcuts', 'ArrowLeft ArrowRight');
+      const id = document.createElement('span');
+      id.className = 'kanban-card__id';
+      id.textContent = task.id;
+      const name = document.createElement('span');
+      name.className = 'kanban-card__name';
+      name.textContent = task.name || '(bez názvu)';
+      card.append(id, name);
+      return card;
+    }
+
+    function render(tasks, notices) {
+      state.tasks = new Map(tasks.map((task) => [task.path, task]));
+      // Beze změny na disku se nástěnka nepřekresluje, aby se nerušilo přetahování ani fokus
+      const signature = JSON.stringify([tasks.map((task) => [task.path, task.id, task.name, task.status]), notices]);
+      if (signature !== state.signature) {
+        state.signature = signature;
+        for (const [status, column] of columns) {
+          const cards = tasks.filter((task) => task.status === status).map(createCard);
+          column.querySelector('[data-cards]').replaceChildren(...cards);
+          column.querySelector('[data-count]').textContent = cards.length;
+        }
+        elements.noticeList.replaceChildren(...notices.map((text) => Object.assign(document.createElement('li'), { textContent: text })));
+      }
+      if (state.focusKey) {
+        elements.board.querySelector(`[data-key="${CSS.escape(state.focusKey)}"]`)?.focus();
+        state.focusKey = null;
+      }
+    }
+
+    async function loadBoard() {
+      try {
+        if ((await state.dir.queryPermission({ mode: 'readwrite' })) !== 'granted') {
+          setView('permission');
+          return false;
+        }
+        const { tasks, notices } = await loadTasks(state.dir);
+        render(tasks, notices);
+        setView('board');
+        return true;
+      } catch (error) {
+        const missing = error.name === 'NotFoundError';
+        if (missing) state.dir = null;
+        // Bez zobrazené nástěnky musí zůstat možnost vybrat složku znovu
+        if (missing || state.view !== 'board') setView('pick');
+        showMessage(missing ? 'Složka s úkoly už neexistuje, vyberte ji znovu.' : `Úkoly se nepodařilo načíst: ${describeError(error)}`, 'error');
+        return false;
+      }
+    }
+
+    function refresh(manual = false) {
+      return serial(async () => {
+        if (state.dir && (await loadBoard()) && manual) showMessage('Úkoly jsou znovu načtené ze souborů.', 'success');
+      });
+    }
+
+    function moveTask(key, status, keepFocus = false) {
+      return serial(async () => {
+        const task = state.tasks.get(key);
+        if (!state.dir || !task || (task.status === status && !task.misplaced)) return;
+        const card = elements.board.querySelector(`[data-key="${CSS.escape(key)}"]`);
+        card?.classList.add('kanban-card--saving');
+        if (keepFocus) state.focusKey = task.path;
+        try {
+          const path = await changeStatus(state.dir, task, status);
+          if (keepFocus) state.focusKey = path;
+          const moved = path === task.path ? '' : `, soubor je teď ve složce ${folderLabel(state.dir, folderFor(status))}`;
+          showMessage(`${task.id} → ${STATUS_LABELS[status]}${moved}`, 'success');
+        } catch (error) {
+          showMessage(`${task.id}: ${describeError(error)}`, 'error');
+        } finally {
+          card?.classList.remove('kanban-card--saving');
+        }
+        await loadBoard();
+      });
+    }
+
+    async function pickFolder() {
+      let dir;
+      try {
+        dir = await window.showDirectoryPicker({ id: pickerId, mode: 'readwrite' });
+      } catch (error) {
+        if (error.name !== 'AbortError') showMessage(`Složku se nepodařilo vybrat: ${describeError(error)}`, 'error');
+        return;
+      }
+      // Při výběru nadřazené složky, např. kořene repozitáře, se použije podsložka, ve které leží stránka
+      if (pageFolderName && dir.name !== pageFolderName) dir = (await getFolder(dir, pageFolderName).catch(() => null)) ?? dir;
+      state.dir = dir;
+      state.signature = '';
+      showMessage('');
+      try {
+        await withStore('readwrite', (store) => store.put(dir, pageKey));
+      } catch {
+        // Bez IndexedDB nástěnka funguje dál, jen bude po novém otevření potřeba složku vybrat znovu
+      }
+      await refresh();
+    }
+
+    function cardFrom(event) {
+      return event.target instanceof Element ? event.target.closest('[data-key]') : null;
+    }
+
+    function clearDropTargets() {
+      for (const column of columns.values()) column.classList.remove('kanban-column--over');
+    }
+
+    elements.board.addEventListener('dragstart', (event) => {
+      const card = cardFrom(event);
+      if (!card) return;
+      state.dragKey = card.dataset.key;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', state.dragKey);
+      card.classList.add('kanban-card--dragging');
+    });
+
+    elements.board.addEventListener('dragend', (event) => {
+      cardFrom(event)?.classList.remove('kanban-card--dragging');
+      state.dragKey = null;
+      clearDropTargets();
+    });
+
+    for (const [status, column] of columns) {
+      column.addEventListener('dragover', (event) => {
+        if (!state.dragKey) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+        column.classList.add('kanban-column--over');
+      });
+      column.addEventListener('dragleave', (event) => {
+        const box = column.getBoundingClientRect();
+        const inside = event.clientX > box.left && event.clientX < box.right && event.clientY > box.top && event.clientY < box.bottom;
+        if (!inside) column.classList.remove('kanban-column--over');
+      });
+      column.addEventListener('drop', (event) => {
+        const key = state.dragKey;
+        state.dragKey = null;
+        clearDropTargets();
+        // Přijímá jen kartu z nástěnky, ne např. soubor přetažený z Finderu
+        if (!key || event.dataTransfer.getData('text/plain') !== key) return;
+        event.preventDefault();
+        moveTask(key, status);
+      });
+    }
+
+    elements.board.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      const task = state.tasks.get(cardFrom(event)?.dataset.key);
+      const next = task && STATUSES[STATUSES.indexOf(task.status) + (event.key === 'ArrowRight' ? 1 : -1)];
+      if (!next) return;
+      event.preventDefault();
+      moveTask(task.path, next, true);
+    });
+
+    elements.connect.addEventListener('click', async () => {
+      if (state.view !== 'permission') {
+        await pickFolder();
+        return;
+      }
+      try {
+        if ((await state.dir.requestPermission({ mode: 'readwrite' })) !== 'granted') {
+          showMessage('Bez povolení nástěnka soubory nenačte.', 'error');
+          return;
+        }
+        showMessage('');
+        await refresh();
+      } catch (error) {
+        showMessage(`Přístup se nepodařilo povolit: ${describeError(error)}`, 'error');
+      }
+    });
+    elements.pick.addEventListener('click', () => pickFolder());
+    elements.refresh.addEventListener('click', () => refresh(true));
+    // Po návratu do okna se načtou změny provedené mimo nástěnku, např. v editoru
+    window.addEventListener('focus', () => {
+      if (state.view === 'board') refresh();
+    });
+
+    async function init() {
+      if (!('showDirectoryPicker' in window)) {
+        setView('unsupported');
+        return;
+      }
+      if (pageFolder) elements.expectedPath.textContent = pageFolder;
+      try {
+        state.dir = (await withStore('readonly', (store) => store.get(pageKey))) ?? null;
+      } catch {
+        state.dir = null;
+      }
+      if (state.dir) await refresh();
+      else setView('pick');
+    }
+
+    init();
+  </script>
+</body>
+</html>
